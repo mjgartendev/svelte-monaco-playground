@@ -1,5 +1,6 @@
 {
-  "name": "helloworld",
+  "name": "svelte-monaco-playground",
+  "homepage" : "https://mjgartendev.github.io/svelte-monaco-playground/",
   "dependencies": {},
   "devDependencies": {
     "cross-env": "^5.2.0",
@@ -16,6 +17,8 @@
   },
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
-    "dev": "webpack-dev-server --content-base public"
+    "dev": "webpack-dev-server --content-base public",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   }
 }
