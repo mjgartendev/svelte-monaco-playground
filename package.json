@@ -1,7 +1,9 @@
 {
   "name": "svelte-monaco-playground",
-  "homepage" : "https://mjgartendev.github.io/svelte-monaco-playground/",
-  "dependencies": {},
+  "homepage": "https://mjgartendev.github.io/svelte-monaco-playground/",
+  "dependencies": {
+    "@mdi/font": "^3.6.95"
+  },
   "devDependencies": {
     "cross-env": "^5.2.0",
     "css-loader": "^2.1.1",

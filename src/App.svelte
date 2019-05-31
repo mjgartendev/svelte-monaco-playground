@@ -203,6 +203,7 @@ a.nav-item:hover {
 
 
 <svelte:head>
+  
 <script>  
   self.MonacoEnvironment = {
 	getWorkerUrl: function (moduleId, label) {
