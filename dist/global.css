@@ -1,0 +1,44 @@
+:root{
+	--header-height: 40px;
+	--footer-height: 40px;
+	--left-width: 40px;
+	--right-width: 40px;
+	--body-bg: #f1f1f1;
+	--surface-bg: #fff;
+	--fg-color: #333;
+}
+body {
+	padding: 0;
+	margin: 0;
+	background: var(--body-bg,#f1f1f1);
+}
+#app-wrapper{
+	height: 100%;
+	display: grid;
+	grid-template: 't t t' 'l c r' 'b b b';
+	grid-template-columns: auto 1fr auto;
+	grid-template-rows: auto 1fr auto;
+}
+#app-header {
+	grid-area: t;
+	height: var(--header-height);
+}
+#app-nav {
+	grid-area: l;
+	width: var(--left-width);
+}
+#app-menu {
+	grid-area: r;
+	width: var(--right-width);
+}
+#app-main {
+	grid-area: c;
+}
+#app-footer {
+	grid-area: b;
+	height: var(--footer-height);
+}
+#container{
+	height: 400px;
+	width: 500px;
+}
