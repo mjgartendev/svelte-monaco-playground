@@ -29,8 +29,8 @@
   --font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 --primary: #29c785;
---secondary: #35495e;
---surface: var(--white);
+--secondary: #2D303A;
+--surface: #1e1f26;
 --ligher: #f0f0f0;
 --light: var(--light);
 --dark: var(--dark);

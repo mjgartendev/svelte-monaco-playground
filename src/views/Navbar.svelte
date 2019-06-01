@@ -3,6 +3,9 @@
     {title}
   </section>
   <section>
+    <img width="200" src="./logo-white.png">
+  </section>
+  <section>
   <nav>
     {#each links as link}
       <a href={link.to}>{link.name}</a>
@@ -18,20 +21,21 @@
 </script>
 <style>
   header{
+    height: 50px;
     display: flex;
     align-items: center;
-    background: #1e1f26;
+    background: var(--secondary, #1e1f26);
     grid-area: top;
     width: 100%;
     display: flex;
     justify-content: space-between;
-    padding: 0 .5rem;
+    padding: 0 1rem;
   }
   nav{
     display: flex;
     align-items: center;
     justify-content: space-around;
-    padding: 0;
+    padding: 0 .5rem;
   }
   a, ::slotted(button){
     padding: .5rem 1rem;
@@ -40,11 +44,15 @@
     cursor: pointer;
     text-decoration: none;
   }
-  a:active{
+  a:hover{
+    background: var(--white, white);
+  }
+  a:active, .active{
     background: var(--light, #f1f1f1);
   }
   ::slotted(button){
     background: var(--primary, mediumseagreen);
     color: var(--light, #f1f1f1);
   }
+  *, *::before, *::after{box-sizing: border-box}
 </style>

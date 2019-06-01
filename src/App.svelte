@@ -7,6 +7,7 @@
   import Navbar from './views/Navbar.svelte'
 
   let previewType;
+  let codeW;
   $: theme = monaco.editor.setTheme(theme);
   $: value = (`${svelteSource.html}\n<style>\n${svelteSource.css}\n</style>\n<script>\n${svelteSource.js}\n<\/script>
   `);
@@ -30,12 +31,11 @@
   </script>
   
 <style>
- 
 .workbench {
   display: grid;
   grid-template-rows: auto 1fr auto;
   grid-template-columns: auto 1fr 1fr;
-  grid-template-areas: "top top top" "nav input output" "nav btm btm";
+  grid-template-areas: "nav top top" "nav input output" "nav btm btm";
   color: white;
   font-family: Roboto;
 	height: 100%;
@@ -43,30 +43,29 @@
 }
 #code{
   width: 100%;
-  grid-area: input}
+  grid-area: input
+}
 #preview {
-  padding: 0;
-  height: 100%;
 	grid-area: output;
 	background: white;
 	color: black;
 }
 pre{background: #f1f1f1;}
 
-.footer {
+footer {
   grid-area: btm;
 }
 .app-panel {
   display: grid;
   grid-template-rows: auto 1fr;
-  border: 1px solid #1e1f26;
+  border: 1px solid var(--secondary);
 	flex-direction: column;
 	height: 100%;
-	background: #1e1f26;
+	background: var(--secondary);
 }
 section.app-panel  > .panel-header {
-	color: darkseagreen;
-	height: 30px;
+  height: 40px;
+	color: var(--primary);
   display: flex;
   justify-content: space-between;
   padding: 0.5em;
@@ -79,116 +78,109 @@ aside.app-drawer {
   display: flex;
   font-size: 2rem;
   background: #2d303a;
-  color: mediumseagreen;
+  color: var(--primary);
 }
-nav {
+aside nav {
   display: flex;
 	flex-direction: column;
 	justify-content: center;
   align-items: center;
 }
-a.nav-item {
-  color: inherit;
+aside a.nav-item {
+  color: var(--primary);;
   align-self: stretch;
   padding: 1rem .5em;
   text-decoration: none;
   font-weight: bold;
 }
-a.nav-item:hover {
-  background: mediumseagreen;
-  color: #f1f1f1;
+aside a.nav-item:hover {
+  background: var(--primary);
+  color: var(--white);
+  fill: var(--white);
 }
 
-.app-toolbar {
+footer, Navbar {
+  height: 40px;
   display: flex;
   padding: 0 1em;
   justify-content: space-between;
   align-items: center;
-  background: #2d303a;
+  background: var(--secondary);
 }
 .btn, select {
 	padding: 0.5em;
-	border: 1px solid #1e1f26;
+	border: 1px solid var(--secondary);
 	font-weight: bold;
-  border-radius: 3px;
-  background: #444857;
-  color: #ddd;
-  fill: #ddd;
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--light);
+  fill: var(--light);
 }
 .btn:hover {
-  fill: mediumseagreen;
-  color: mediumseagreen;
+  fill: var(--primary);
+  color: var(--primary);
   cursor: pointer;
 }
+*, *::before, *::after {box-sizing: border-box}
 </style>
 
 <div class="workbench">
-  <!-- <header class="navbar app-toolbar">
-     <div class="left">      
-        ⛱ | {name} | Hello, {user}!
-      </div>
-     <div class="right">
-      <button class="btn"><span class="mdi mdi-heart-outline"></span></button>
-        <button class="btn"><span class="mdi mdi-floppy"></span></button>
-        <button class="btn"><span class="mdi mdi-source-branch"></span></button>
-        <button class="btn"><span class="mdi mdi-wrench-outline"></span></button>
-        <button class="btn"><span class="mdi mdi-view-quilt"></span></button>
-        <button class="btn"><span class="mdi mdi-pin"></span></button>
-        <button class="btn"><span class="mdi mdi-account-box-outline"></span></button>
-     </div>
-  </header> -->
-  <Navbar class="navbar app-toolbar" title={"SvelteMonaco Playground"} links={[{name: "home", to: "."}]}>
+  <Navbar title={name} links={[
+    {name: "home", to: "."},
+    {name: "profile", to: "/profile"}
+  ]}>
     <Login></Login>
   </Navbar>
   <aside class="app-drawer">
     <nav>
-      <a class="nav-item" href="#dashboard">
-        <span class="mdi mdi-large mdi-home">
+      <a class="nav-item" href="/dashboard">
+        <span class="fas fa-home"></span>
         <p hidden>Dash</p>
       </a>
-      <a class="nav-item" href="#config">
-        <span class="mdi mdi-tune">
+      <a class="nav-item" href="/settings">
+        <span class="fas fa-cog"></span>
         <p hidden>Config</p>
       </a>
-      <a class="nav-item" href="#theme">
-        <span class="mdi mdi-palette-outline">
+      <a class="nav-item" href="/theme">
+        <span class="fas fa-paint-brush"></span>
         <p hidden>Theme</p>
       </a>
-      <a class="nav-item" href="#data">
-        <span class="mdi mdi-database">
+      <a class="nav-item" href="/resources">
+        <span class="fas fa-compass"></span>
         <p hidden>Data</p>
       </a>
-      <a class="nav-item" href="#ui">
-        <span class="mdi mdi-view-quilt">
+      <a class="nav-item" href="/components">
+        <span class="fas fa-cubes"></span>
         <p hidden>UI</p>
       </a>
-      <a class="nav-item" href="/settings">
-        <span class="mdi mdi-settings-outline"></span>
+      <a class="nav-item" href="/projects">
+        <span class="fas fa-box-open"></span>
         <p hidden>Settings</p>
       </a>
     </nav>
   </aside>
+
   <section id="code"  class="app-panel">
     <header class="panel-header">
-        <button class="btn"><span class="mdi mdi-36 mdi-pencil"></span></button>
+        <button class="btn"><span class="fas fa-edit"></span></button>
         <p class="title">Svelte Component</p>
         <select bind:value={theme}>
             <option>vs-dark</option>
             <option>vs</option>
           </select>
     </header>
-    <div class="panel-content" style="display: flex; flex-direction: column;">
+    <div class="panel-content" bind:clientWidth={codeW} style="display: flex; flex-direction: column;">
       <span>Markup</span>
-      <div on:keydown={updatePreview} id="markup" style="height: 100%; width: 100%;"></div>
+      <div on:keydown={updatePreview} id="markup" style="height: 100%; width: {codeW};"></div>
       <span>Style</span>
-      <div on:keydown={updatePreview} id="style" style="height: 100%; width: 100%;"></div> 
+      <div on:keydown={updatePreview} id="style" style="height: 100%; width: {codeW};"></div> 
       <span>Script</span>
-      <div on:keydown={updatePreview} id="script" style="height: 100%; width: 100%;"></div> 
+      <div on:keydown={updatePreview} id="script" style="height: 100%; width: {codeW};"></div> 
    </div>
   </section>
   <section id="preview" class="app-panel">
     <header class="panel-header">
-      <button class="btn"><span class="mdi mdi-36 mdi-pencil"></span></button>
+      <button class="btn"><span class="fas fa-edit"></span></button>
       <p class="title">Preview</p>
       <select bind:value={previewType}>
         <option>rendered</option>
@@ -205,7 +197,7 @@ a.nav-item:hover {
       
     </div>
   </section>
-  <footer class="footer app-toolbar">
+  <footer>
      <div class="left">
         <button class="btn">Console</button>
         <button class="btn">Assets</button>
