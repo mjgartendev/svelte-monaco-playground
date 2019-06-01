@@ -1,10 +1,12 @@
 <script>
   import * as monaco from 'monaco-editor';
-  import * as svelte from 'svelte/compiler'
+  import * as svelte from 'svelte/compiler';
   import {onMount} from 'svelte';
-  import SplitPane from './components/SplitPane.svelte'
-  import Login from './components/Login.svelte'
-  import Navbar from './views/Navbar.svelte'
+  import SplitPane from './components/SplitPane.svelte';
+  import Login from './components/Login.svelte';
+  import Navbar from './views/Navbar.svelte';
+  import Sidebar from './views/Sidebar.svelte';
+  import Footer from './views/Footer.svelte';
 
   let previewType;
   let codeW;
@@ -52,9 +54,6 @@
 }
 pre{background: #f1f1f1;}
 
-footer {
-  grid-area: btm;
-}
 .app-panel {
   display: grid;
   grid-template-rows: auto 1fr;
@@ -73,40 +72,8 @@ section.app-panel  > .panel-header {
 	font-weight: bold;
   background: #444857;
 }
-aside.app-drawer {
-	grid-area: nav;
-  display: flex;
-  font-size: 2rem;
-  background: #2d303a;
-  color: var(--primary);
-}
-aside nav {
-  display: flex;
-	flex-direction: column;
-	justify-content: center;
-  align-items: center;
-}
-aside a.nav-item {
-  color: var(--primary);;
-  align-self: stretch;
-  padding: 1rem .5em;
-  text-decoration: none;
-  font-weight: bold;
-}
-aside a.nav-item:hover {
-  background: var(--primary);
-  color: var(--white);
-  fill: var(--white);
-}
-
-footer, Navbar {
-  height: 40px;
-  display: flex;
-  padding: 0 1em;
-  justify-content: space-between;
-  align-items: center;
-  background: var(--secondary);
-}
+Sidebar{	grid-area: nav}
+Footer{grid-area: btm}
 .btn, select {
 	padding: 0.5em;
 	border: 1px solid var(--secondary);
@@ -131,35 +98,7 @@ footer, Navbar {
   ]}>
     <Login></Login>
   </Navbar>
-  <aside class="app-drawer">
-    <nav>
-      <a class="nav-item" href="/dashboard">
-        <span class="fas fa-home"></span>
-        <p hidden>Dash</p>
-      </a>
-      <a class="nav-item" href="/settings">
-        <span class="fas fa-cog"></span>
-        <p hidden>Config</p>
-      </a>
-      <a class="nav-item" href="/theme">
-        <span class="fas fa-paint-brush"></span>
-        <p hidden>Theme</p>
-      </a>
-      <a class="nav-item" href="/resources">
-        <span class="fas fa-compass"></span>
-        <p hidden>Data</p>
-      </a>
-      <a class="nav-item" href="/components">
-        <span class="fas fa-cubes"></span>
-        <p hidden>UI</p>
-      </a>
-      <a class="nav-item" href="/projects">
-        <span class="fas fa-box-open"></span>
-        <p hidden>Settings</p>
-      </a>
-    </nav>
-  </aside>
-
+  <Sidebar />
   <section id="code"  class="app-panel">
     <header class="panel-header">
         <button class="btn"><span class="fas fa-edit"></span></button>
@@ -197,21 +136,7 @@ footer, Navbar {
       
     </div>
   </section>
-  <footer>
-     <div class="left">
-        <button class="btn">Console</button>
-        <button class="btn">Assets</button>
-        <button class="btn">Comments</button>
-        <button class="btn">Shortcuts</button>
-     </div>
-     <div class="right">
-        <button class="btn">Delete</button>
-        <button class="btn">Collections</button>
-        <button class="btn">Embed</button>
-        <button class="btn">Export</button>
-        <button class="btn">Share</button>
-     </div>
-  </footer>
+  <Footer/>
 </div>
 
 

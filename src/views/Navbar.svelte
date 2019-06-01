@@ -11,6 +11,7 @@
       <a href={link.to}>{link.name}</a>
     {/each}
   <slot><button>Login</button></slot>
+  <i class="fas fa-ellipsis-v"></i>
   </nav>
   </section>
 </header>
@@ -29,15 +30,15 @@
     width: 100%;
     display: flex;
     justify-content: space-between;
-    padding: 0 1rem;
+    padding: 0 .5rem;
   }
   nav{
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-between;
     padding: 0 .5rem;
   }
-  a, ::slotted(button){
+  a, i, ::slotted(button){
     padding: .5rem 1rem;
     color: var(--primary, mediumseagreen);
     font-weight: bold;
