@@ -1,10 +1,13 @@
 <script>
   import * as monaco from 'monaco-editor';
+  import * as svelte from 'svelte/compiler'
   import {onMount} from 'svelte';
+  import SplitPane from './components/SplitPane.svelte'
 
-  $: theme = monaco.editor.setTheme(theme);
   let previewType;
-  $: value = `${svelteSource.html}<style>${svelteSource.css}</style><script>${svelteSource.js}<\/script>`;
+  $: theme = monaco.editor.setTheme(theme);
+  $: value = (`${svelteSource.html}\n<style>\n${svelteSource.css}\n</style>\n<script>\n${svelteSource.js}\n<\/script>
+  `);
   let svelteSource = {
     html: '',
     css: '',
@@ -12,13 +15,16 @@
   };
   export let name = "SvelteMonaco Sandbox";
   export let user = "Stranger";
+  $: result = console.log(svelte.compile(value));
   function updatePreview(){
     svelteSource.html = monaco.editor.getModel('inmemory://model/1').getValue();
     svelteSource. css = monaco.editor.getModel('inmemory://model/2').getValue();
     svelteSource.js = monaco.editor.getModel('inmemory://model/3').getValue();
-    console.log(svelteSource)
   }
-  onMount(() => updatePreview())
+  onMount(() => {
+    updatePreview();
+    compileComponent();
+  })
   </script>
   
 <style>
@@ -34,13 +40,16 @@
   width: 100vw;
   box-sizing: border-box;
 }
-#code{grid-area: input}
+#code{
+  width: 100%;
+  grid-area: input}
 #preview {
-	all: initial;
+  height: 100%;
 	grid-area: output;
 	background: white;
 	color: black;
 }
+pre{background: #f1f1f1;}
 .navbar {
 	grid-area: top;
   background: #1e1f26;
@@ -190,7 +199,11 @@ a.nav-item:hover {
       </select>
     </header>
     <div class="panel-content">
-      <output id="output">{@html value}</output>
+      <SplitPane>
+          <output slot="b" id="output">{@html value}</output>
+          <pre slot="a" id="output">{value}</pre>
+      </SplitPane>
+      
     </div>
   </section>
   <footer class="footer app-toolbar">
@@ -212,25 +225,25 @@ a.nav-item:hover {
 
 
 <svelte:head>
-<script>  
-  monaco.editor.create(document.getElementById('markup'), {
-    value: [
-      '<h1>Hello {name}!</h1>',
-      'name: <input bind:value={name}>'
-    ].join('\n'),
-    language: 'html'
-  });
-  monaco.editor.create(document.getElementById('style'), {
-    value: [
-      'h1 {\n\tcolor: mediumseagreen\n}\n',
-    ].join('\n'),
-    language: 'css'
-  });
-  monaco.editor.create(document.getElementById('script'), {
-    value: [
-      'let name = "SvelteMonaco";',
-    ].join('\n'),
-    language: 'javascript'
-  });
+  <script>  
+    monaco.editor.create(document.getElementById('markup'), {
+      value: [
+        '<h1>Hello {name}!</h1>',
+        'name: <input bind:value={name}>'
+      ].join('\n'),
+      language: 'html'
+    });
+    monaco.editor.create(document.getElementById('style'), {
+      value: [
+        'h1 {\n  color: mediumseagreen\n}\n',
+      ].join('\n'),
+      language: 'css'
+    });
+    monaco.editor.create(document.getElementById('script'), {
+      value: [
+        '  let name = "SvelteMonaco";',
+      ].join('\n'),
+      language: 'javascript'
+    });
   </script>
 </svelte:head>
