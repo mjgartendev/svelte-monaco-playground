@@ -10,13 +10,13 @@
     {#each links as link}
       <a href={link.to}>{link.name}</a>
     {/each}
-  <slot><button>Login</button></slot>
-  <i class="fas fa-ellipsis-v"></i>
+  <Login/>
   </nav>
   </section>
 </header>
 
 <script>
+  import Login from '../components/Login.svelte';
   export let links;
   export let title = "AppTitle";
 </script>
@@ -25,7 +25,8 @@
     height: 50px;
     display: flex;
     align-items: center;
-    background: var(--secondary, #1e1f26);
+    background: var(--surface);
+    color: var(--primary);
     grid-area: top;
     width: 100%;
     display: flex;

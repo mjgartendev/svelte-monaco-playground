@@ -1,4 +1,3 @@
-@import url("https://fonts.googleapis.com/css?family=Roboto:400,700");
 :root{
   --blue: #007bff;
   --indigo: #6610f2;
@@ -29,11 +28,9 @@
   --font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 --primary: #29c785;
---secondary: #2D303A;
---surface: #1e1f26;
---ligher: #f0f0f0;
---light: var(--light);
---dark: var(--dark);
+--secondary: #444857;
+--surface: #2D303A;
+--lighter: #f0f0f0;
 --darker: #333;
 --radius: 4px;
 --shadow-sm: 0px 1px 3px 0px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 2px 1px -1px rgba(0,0,0,0.12);
@@ -42,7 +39,7 @@
 }
 html,
 body {
-  font-family: Roboto;
+  font-family: var(--font-family-monospace);
   position: relative;
   width: 100%;
   height: 100%;
@@ -56,7 +53,7 @@ body {
 }
 
 a {
-  color: mediumseagreen;
+  color:var(--primary);
   text-decoration: none;
 }
 
@@ -72,3 +69,17 @@ input[type="range"] {
   height: 0;
 }
 
+button, select {
+	padding: 0.5em;
+	border: 1px solid var(--secondary);
+	font-weight: bold;
+  border-radius: var(--radius);
+  background: var(--secondary);
+  color: var(--light);
+  fill: var(--light);
+}
+button:hover {
+  fill: var(--primary);
+  color: var(--primary);
+  cursor: pointer;
+}

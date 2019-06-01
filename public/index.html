@@ -31,19 +31,33 @@
 	
 	<body>
 		<script src='bundle.bundle.js'></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.5/require.min.js" integrity="sha256-0SGl1PJNDyJwcV5T+weg2zpEMrh7xvlwO4oXgvZCeZk=" crossorigin="anonymous"></script>
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.17.0/min/vs/loader.js"></script>
+
 		<script>
-			require.config({
-				paths: {
-					'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.17.0/min/vs'
+				require.config({
+					paths: {
+						'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.17.0/min/vs'
+					}
+				});
+				self.MonacoEnvironment = {
+					getWorkerUrl: function (moduleId, label) {
+						if (label === 'json') {
+							return './json.worker.bundle.js';
+						}
+						if (label === 'css') {
+							return './css.worker.bundle.js';
+						}
+						if (label === 'html') {
+							return './html.worker.bundle.js';
+						}
+						if (label === 'typescript' || label === 'javascript') {
+							return './ts.worker.bundle.js';
+						}
+						return './editor.worker.bundle.js';
+					}
 				}
-			});
-			window.MonacoEnvironment = {
-				getWorkerUrl: function (workerId, label) {
-					return '/monaco-editor-worker-loader-proxy.js';
-				}
-			};
-			require(["vs/editor/editor.main"], function () {})
+				require(["vs/editor/editor.main"], function () {})
 		</script>
 	</body>
 </html>

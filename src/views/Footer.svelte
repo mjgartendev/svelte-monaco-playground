@@ -22,7 +22,8 @@
     padding: 0 1em;
     justify-content: space-between;
     align-items: center;
-    background: var(--secondary);
+    background: var(--surface);
+    color: var(--primary);
   }
 
   button,
@@ -31,7 +32,7 @@
     border: 1px solid var(--secondary);
     font-weight: bold;
     border-radius: var(--radius);
-    background: var(--surface);
+    background: var(--secondary);
     color: var(--light);
     fill: var(--light);
   }

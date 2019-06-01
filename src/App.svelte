@@ -1,104 +1,96 @@
 <script>
   import * as monaco from 'monaco-editor';
-  import * as svelte from 'svelte/compiler';
-  import {onMount} from 'svelte';
   import SplitPane from './components/SplitPane.svelte';
-  import Login from './components/Login.svelte';
+  import MonacoEditor from './components/MonacoEditor.svelte'
   import Navbar from './views/Navbar.svelte';
   import Sidebar from './views/Sidebar.svelte';
   import Footer from './views/Footer.svelte';
 
-  let previewType;
-  let codeW;
   $: theme = monaco.editor.setTheme(theme);
-  $: value = (`${svelteSource.html}\n<style>\n${svelteSource.css}\n</style>\n<script>\n${svelteSource.js}\n<\/script>
-  `);
-  let svelteSource = {
-    html: '',
-    css: '',
-    js: '',
-  };
-  export let name = "SvelteMonaco Sandbox";
-  export let user = "Stranger";
-  $: result = console.log(svelte.compile(value));
-  function updatePreview(){
-    svelteSource.html = monaco.editor.getModel('inmemory://model/1').getValue();
-    svelteSource. css = monaco.editor.getModel('inmemory://model/2').getValue();
-    svelteSource.js = monaco.editor.getModel('inmemory://model/3').getValue();
-  }
-  onMount(() => {
-    updatePreview();
-    compileComponent();
-  })
-  </script>
+  $: value = `${html}\n<style>\n${css}\n</style>\n<script>\n${js}\n<\/script>`;
+  let js = 'let name: string = "SvelteMonaco";\nfunction hello(name: string) {\n\tconsole.log(name);\n};';
+  let html = '<h1>Hello {name}!</h1>\n<label>name</label>\n<input bind:value={name}>\n<button>Click me!</button>';
+  let css = 'h1 {\n\tcolor: var(--primary);\n}\n:root {\n\t--primary: #29c785;\n\t--secondary: #444857;\n\t--surface: #2D303A;\n}';
+  export let name = "SvelteMonaco Playground";
+  let previewType;
+</script>
   
 <style>
-.workbench {
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  grid-template-columns: auto 1fr 1fr;
-  grid-template-areas: "nav top top" "nav input output" "nav btm btm";
-  color: white;
-  font-family: Roboto;
-	height: 100%;
-  box-sizing: border-box;
-}
-#code{
-  width: 100%;
-  grid-area: input
-}
-#preview {
-	grid-area: output;
-	background: white;
-	color: black;
-}
-pre{background: #f1f1f1;}
-
-.app-panel {
-  display: grid;
-  grid-template-rows: auto 1fr;
-  border: 1px solid var(--secondary);
-	flex-direction: column;
-	height: 100%;
-	background: var(--secondary);
-}
-section.app-panel  > .panel-header {
-  height: 40px;
-	color: var(--primary);
-  display: flex;
-  justify-content: space-between;
-  padding: 0.5em;
-	align-items: center;
-	font-weight: bold;
-  background: #444857;
-}
-Sidebar{	grid-area: nav}
-Footer{grid-area: btm}
-.btn, select {
-	padding: 0.5em;
-	border: 1px solid var(--secondary);
-	font-weight: bold;
-  border-radius: var(--radius);
-  background: var(--surface);
-  color: var(--light);
-  fill: var(--light);
-}
-.btn:hover {
-  fill: var(--primary);
-  color: var(--primary);
-  cursor: pointer;
-}
-*, *::before, *::after {box-sizing: border-box}
+  .workbench {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    grid-template-columns: auto 1fr 1fr;
+    grid-template-areas: "nav top top" "nav input output" "nav btm btm";
+    color: white;
+    font-family: Roboto;
+    height: 100%;
+    box-sizing: border-box;
+  }
+  Navbar {grid-area: top}
+  Sidebar{grid-area: nav}
+  Footer{grid-area: btm}
+  #code{
+    width: 100%;
+    grid-area: input
+  }
+  #preview {
+    padding: 0;
+    grid-area: output;
+    background: white;
+  }
+  output {
+    background: white;
+  }
+  pre{
+    background: #333;
+    padding: .25rem;
+    border-radius: var(--radius);
+    overflow: auto;
+    height: 200px;
+    font-size: 16px;
+  }
+  .app-panel {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    border: 1px solid var(--secondary);
+    flex-direction: column;
+    height: 100%;
+    background: var(--surface);
+  }
+  section.app-panel  > .panel-header {
+    height: 40px;
+    color: var(--primary);
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5em;
+    align-items: center;
+    font-weight: bold;
+    background: var(--surface);
+    margin: 0;
+  }
+  *, *::before, *::after {box-sizing: border-box}
 </style>
 
 <div class="workbench">
-  <Navbar title={name} links={[
-    {name: "home", to: "."},
-    {name: "profile", to: "/profile"}
-  ]}>
-    <Login></Login>
-  </Navbar>
-  <Sidebar />
+  <Navbar 
+    title={name} 
+    links={[
+      {name: "home", to: "."},
+      {name: "explore", to: "/explore"},
+      {name: "profile", to: "/profile"}
+    ]}
+  />
+  <Sidebar 
+    links={[
+      {name: "dashboard", to: "/dashboard", icon: "home"},
+      {name: "settings", to: "/settings", icon: "cog"},
+      {name: "theme", to: "/theme", icon: "paint-brush"},
+      {name: "resources", to: "/resources", icon: "compass"},
+      {name: "components", to: "/components", icon: "cubes"},
+      {name: "projects", to: "/projects", icon: "box-open"}
+    ]}
+  />
+
   <section id="code"  class="app-panel">
     <header class="panel-header">
         <button class="btn"><span class="fas fa-edit"></span></button>
@@ -108,18 +100,30 @@ Footer{grid-area: btm}
             <option>vs</option>
           </select>
     </header>
-    <div class="panel-content" bind:clientWidth={codeW} style="display: flex; flex-direction: column;">
-      <span>Markup</span>
-      <div on:keydown={updatePreview} id="markup" style="height: 100%; width: {codeW};"></div>
-      <span>Style</span>
-      <div on:keydown={updatePreview} id="style" style="height: 100%; width: {codeW};"></div> 
-      <span>Script</span>
-      <div on:keydown={updatePreview} id="script" style="height: 100%; width: {codeW};"></div> 
+    <div class="panel-content" style="display: flex; flex-direction: column; width: 100%; height: 100%;">
+      <MonacoEditor 
+        name={"markup"}
+        language={"html"}
+        initialValue={html}        
+        on:keydown={(e)=> html = e.target.value}
+      />
+      <MonacoEditor 
+        name={"style"}
+        language={"css"}
+        initialValue={css}    
+        on:keydown={(e)=> css = e.target.value}
+      />
+      <MonacoEditor 
+        name={'script'}    
+        language={"javascript"}        
+        initialValue={js}        
+        on:keydown={(e)=> js = e.target.value}
+      />
    </div>
   </section>
   <section id="preview" class="app-panel">
     <header class="panel-header">
-      <button class="btn"><span class="fas fa-edit"></span></button>
+      <button><span class="fas fa-edit"></span></button>
       <p class="title">Preview</p>
       <select bind:value={previewType}>
         <option>rendered</option>
@@ -130,36 +134,17 @@ Footer{grid-area: btm}
     </header>
     <div class="panel-content">
       <SplitPane>
-          <output slot="b" id="output">{@html value}</output>
-          <pre slot="a" id="output">{value}</pre>
+        <pre slot="a" id="raw" data-lang="text/html">{value}</pre>
+        <output slot="b">{@html value}</output>
       </SplitPane>
-      
     </div>
   </section>
+
   <Footer/>
 </div>
-
-
 <svelte:head>
-  <script>  
-    monaco.editor.create(document.getElementById('markup'), {
-      value: [
-        '<h1>Hello {name}!</h1>',
-        'name: <input bind:value={name}>'
-      ].join('\n'),
-      language: 'html'
-    });
-    monaco.editor.create(document.getElementById('style'), {
-      value: [
-        'h1 {\n  color: mediumseagreen\n}\n',
-      ].join('\n'),
-      language: 'css'
-    });
-    monaco.editor.create(document.getElementById('script'), {
-      value: [
-        '  let name = "SvelteMonaco";',
-      ].join('\n'),
-      language: 'javascript'
-    });
+  <script>
+      monaco.editor.colorizeElement(document.getElementById('raw'));
   </script>
 </svelte:head>
+

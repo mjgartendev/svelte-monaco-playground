@@ -2,11 +2,9 @@ import * as functions from 'firebase-functions';
 const svelte = require('svelte/compiler');
 require('svelte/register');
 
-const App = require('../../src/Tabs.svelte').default;
-
-export const render = functions.https.onRequest((request, response) => {
-  response.send(App.render());
-})
+// export const render = functions.https.onRequest((request, response) => {
+//   response.send(App.render());
+// })
 
 export const helloWorld = functions.https.onRequest((request, response) => {
  response.send("Hello from Firebase!");
@@ -25,9 +23,7 @@ const source = (`
   </script>
 `)
 
-export const compile = functions.https.onRequest((request, response) =>
-{
-  
+export const compile = functions.https.onRequest((request, response) => {
   const result = svelte.compile(source);
   response.send(result);
 })
