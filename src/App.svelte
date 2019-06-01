@@ -3,6 +3,8 @@
   import * as svelte from 'svelte/compiler'
   import {onMount} from 'svelte';
   import SplitPane from './components/SplitPane.svelte'
+  import Login from './components/Login.svelte'
+  import Navbar from './views/Navbar.svelte'
 
   let previewType;
   $: theme = monaco.editor.setTheme(theme);
@@ -31,32 +33,26 @@
  
 .workbench {
   display: grid;
-  grid-template-rows: 60px auto 40px;
+  grid-template-rows: auto 1fr auto;
   grid-template-columns: auto 1fr 1fr;
   grid-template-areas: "top top top" "nav input output" "nav btm btm";
   color: white;
   font-family: Roboto;
 	height: 100%;
-  width: 100vw;
   box-sizing: border-box;
 }
 #code{
   width: 100%;
   grid-area: input}
 #preview {
+  padding: 0;
   height: 100%;
 	grid-area: output;
 	background: white;
 	color: black;
 }
 pre{background: #f1f1f1;}
-.navbar {
-	grid-area: top;
-  background: #1e1f26;
-}
-.navbar .btn {
-  padding: 0.75em;
-}
+
 .footer {
   grid-area: btm;
 }
@@ -127,7 +123,7 @@ a.nav-item:hover {
 </style>
 
 <div class="workbench">
-  <header class="navbar app-toolbar">
+  <!-- <header class="navbar app-toolbar">
      <div class="left">      
         ⛱ | {name} | Hello, {user}!
       </div>
@@ -140,7 +136,10 @@ a.nav-item:hover {
         <button class="btn"><span class="mdi mdi-pin"></span></button>
         <button class="btn"><span class="mdi mdi-account-box-outline"></span></button>
      </div>
-  </header>
+  </header> -->
+  <Navbar class="navbar app-toolbar" title={"SvelteMonaco Playground"} links={[{name: "home", to: "."}]}>
+    <Login></Login>
+  </Navbar>
   <aside class="app-drawer">
     <nav>
       <a class="nav-item" href="#dashboard">
