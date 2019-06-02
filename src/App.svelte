@@ -2,17 +2,18 @@
   import * as monaco from 'monaco-editor';
   import SplitPane from './components/SplitPane.svelte';
   import MonacoEditor from './components/MonacoEditor.svelte'
+  import ComponentPreview from './components/ComponentPreview.svelte'
   import Navbar from './views/Navbar.svelte';
   import Sidebar from './views/Sidebar.svelte';
   import Footer from './views/Footer.svelte';
+  
+  export let name = "SvelteMonaco Playground";
+  export let previewType;
 
   $: theme = monaco.editor.setTheme(theme);
-  $: value = `${html}\n<style>\n${css}\n</style>\n<script>\n${js}\n<\/script>`;
-  let js = 'let name: string = "SvelteMonaco";\nfunction hello(name: string) {\n\tconsole.log(name);\n};';
+  let js = 'let name = "SvelteMonaco";\nfunction hello(name) {\n\tconsole.log(name);\n};';
   let html = '<h1>Hello {name}!</h1>\n<label>name</label>\n<input bind:value={name}>\n<button>Click me!</button>';
   let css = 'h1 {\n\tcolor: var(--primary);\n}\n:root {\n\t--primary: #29c785;\n\t--secondary: #444857;\n\t--surface: #2D303A;\n}';
-  export let name = "SvelteMonaco Playground";
-  let previewType;
 </script>
   
 <style>
@@ -38,16 +39,8 @@
     grid-area: output;
     background: white;
   }
-  output {
-    background: white;
-  }
-  pre{
-    background: #333;
-    padding: .25rem;
-    border-radius: var(--radius);
-    overflow: auto;
-    height: 200px;
-    font-size: 16px;
+  #code .panel-content {
+    display: flex; flex-direction: column; width: 100%; height: 100%;
   }
   .app-panel {
     display: grid;
@@ -100,7 +93,7 @@
             <option>vs</option>
           </select>
     </header>
-    <div class="panel-content" style="display: flex; flex-direction: column; width: 100%; height: 100%;">
+    <div class="panel-content">
       <MonacoEditor 
         name={"markup"}
         language={"html"}
@@ -126,25 +119,17 @@
       <button><span class="fas fa-edit"></span></button>
       <p class="title">Preview</p>
       <select bind:value={previewType}>
-        <option>rendered</option>
+        <option>raw</option>
+        <option>live</option>
         <option>ast</option>
-        <option>js</option>
-        <option>css</option>
       </select>
     </header>
     <div class="panel-content">
-      <SplitPane>
-        <pre slot="a" id="raw" data-lang="text/html">{value}</pre>
-        <output slot="b">{@html value}</output>
-      </SplitPane>
+      <ComponentPreview html={html} css={css} js={js} type={previewType}/>
     </div>
   </section>
 
   <Footer/>
 </div>
-<svelte:head>
-  <script>
-      monaco.editor.colorizeElement(document.getElementById('raw'));
-  </script>
-</svelte:head>
+
 

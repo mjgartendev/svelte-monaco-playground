@@ -8,7 +8,9 @@ WIP for sure. Beware large clone size until editor bundle build is ironed out.
 
 [ ] Resolve CORS issues with worker bundles for static hosting
 
-[ ] Setup Firebase Auth to save components
+[x] Setup Firebase Auth 
+
+[ ] Add storage to save components and switch between them
 
 [ ] Add Function for compiling/SSR of source
 

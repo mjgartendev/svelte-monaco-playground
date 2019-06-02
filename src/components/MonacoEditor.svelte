@@ -20,7 +20,7 @@
   export let h = "100%";
   export let w = "100%";
   export let theme = 'vs-dark';
-  export let language = 'typescript';
+  export let language = 'javascript';
   export let initialValue = 'function hello(name: string) {\n\talert(`Hello ${name}!`);\n}';
   export let name;
   let editor;
