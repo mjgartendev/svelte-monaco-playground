@@ -80,9 +80,9 @@
       <button><span class="fas fa-edit"></span></button>
       <p class="title">Preview</p>
       <select bind:value={previewType}>
+        <option>ast</option>
         <option>live</option>
         <option>original</option>
-        <option>ast</option>
         <option>css</option>
         <option>js</option>
       </select>
