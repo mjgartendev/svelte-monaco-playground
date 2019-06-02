@@ -1,18 +1,16 @@
 <header>
-  <section>
+  <div>
     {title}
-  </section>
-  <section>
-    <img width="200" src="./logo-white.png">
-  </section>
-  <section>
-  <nav>
-    {#each links as link}
+  </div>
+  <div><img src="logo-192.png" height="40" alt="svelte logo" /></div>
+  <div>
+    <nav>
+      {#each links as link}
       <a href={link.to}>{link.name}</a>
     {/each}
   <Login/>
   </nav>
-  </section>
+  </div>
 </header>
 
 <script>

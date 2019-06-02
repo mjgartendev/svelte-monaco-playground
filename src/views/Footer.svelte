@@ -6,6 +6,9 @@
     <button>Shortcuts</button>
   </div>
   <div>
+      <img width="200" src="./logo-white.png">
+    </div>
+  <div>
     <button>Delete</button>
     <button>Collections</button>
     <button>Embed</button>

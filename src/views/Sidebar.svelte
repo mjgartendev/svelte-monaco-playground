@@ -1,7 +1,7 @@
 <aside class="app-drawer">
     <nav>
         {#each links as link}
-          <a href={link.to}>
+          <a href={link.to} class:active={link.to == path}>
             <span class="fas fa-{link.icon}"></span>
             <p hidden>{link.name}</p>
           </a>
@@ -29,7 +29,7 @@
     text-decoration: none;
     font-weight: bold;
   }
-  a:hover {
+  a:hover, a.active {
     background: var(--primary);
     color: var(--white);
     fill: var(--white);
@@ -38,4 +38,5 @@
 
 <script>
   export let links;
+  export let path = "";
 </script>
