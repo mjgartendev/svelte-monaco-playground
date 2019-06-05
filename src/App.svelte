@@ -1,28 +1,61 @@
 <script>
   import * as monaco from 'monaco-editor';
-  import SplitPane from './components/SplitPane.svelte';
+  import {onMount} from 'svelte'
+  import {db} from './firebase.js'
   import MonacoEditor from './components/MonacoEditor.svelte'
   import ComponentPreview from './components/ComponentPreview.svelte'
   import Navbar from './views/Navbar.svelte';
   import Sidebar from './views/Sidebar.svelte';
   import Footer from './views/Footer.svelte';
-
-  import Explore from "./pages/Explore.svelte";
-  import Playground from "./pages/Playground.svelte";
-  import Profile from "./pages/Profile.svelte";
-  import Projects from "./pages/Projects.svelte"; 
-  import Settings from "./pages/Settings.svelte";
-  import Theme from "./pages/Explore.svelte";
   
   export let path = window.location.pathname;
   export let name = "SvelteMonaco Playground";
   export let previewType;
-  let js = 'let name = "SvelteMonaco";\nfunction hello(name) {\n\tconsole.log(name);\n};';
-  let html = '<h1>Hello {name}!</h1>\n<label>name</label>\n<input bind:value={name}>\n<button>Click me!</button>';
-  let css = 'h1 {\n\tcolor: var(--primary);\n}\n:root {\n\t--primary: #29c785;\n\t--secondary: #444857;\n\t--surface: #2D303A;\n}';
-  $: theme = monaco.editor.setTheme(theme);
-</script>
+  let snippets = [{id: 'NewSnippet', title: 'NewSnippet', html: "<h1>hello {name}</h1>\n<button>Button</button>", css: "button {\n\tbackground: var(--primary)\n}", js: "function x(name) {\n\tconsole.log()\t}"},]
+  let selectedSnippet = snippets[0];
+  $: source = {
+    js: selectSnippet.js,
+    css: selectedSnippet.css,
+    html: selectedSnippet.html
+  };
+  export let theme = 'vs-dark';
+  function addSnippet() {
+    db.collection("snippets").add({
+      title: selectedSnippet.title,
+      html: selectedSnippet.html,
+      css: selectedSnippet.css,
+      js: selectedSnippet.js,
+    })
+    .then(function(docRef) {
+        console.log("Document written with ID: ", docRef);
+    })
+    .catch(function(error) {
+        console.error("Error adding document: ", error);
+    });
+  }
+  function removeSnippet(snippet){
+    console.log("removing snippet", snippet)
+  }
+  function getSnippets() {
+    db.collection("snippets").get().then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+          snippets = [
+            ...snippets, 
+            {...doc.data(), id: doc.id}
+          ];
+      });
+    });
+    console.log([snippets])
+  }
+  function selectSnippet(snippet){
+    console.log("Selecting snippet:", snippet)
+    selectedSnippet = snippet;
 
+  }
+  onMount(() => {
+    getSnippets();
+  })
+</script>
 
 <div class="workbench">
   <Navbar 
@@ -44,33 +77,44 @@
       {name: "projects", to: "/projects", icon: "box-open"}
     ]}
   />
+  <section id="list" class="app-panel">
+    <header class="panel-header">
+       <button on:click={addSnippet} class="btn"><span class="fas fa-plus"></span></button>
+        <p class="title">Snippets</p>
+    </header>
+    <div class="panel-content">
+    <ul style="overflow: auto">
+        {#each snippets as snippet}
+          <li id={snippet.id} on:click={() => selectSnippet({...snippet})}>{snippet.title} <span on:click={() => removeSnippet({...snippet})}>X</span></li>
+        {/each}
+    </ul>
+    </div>
+  </section>
+
   <section id="code"  class="app-panel">
     <header class="panel-header">
         <button class="btn"><span class="fas fa-edit"></span></button>
-        <p class="title">Svelte Component</p>
+        <input bind:value={selectedSnippet.title} class="title"/>
         <select bind:value={theme}>
             <option>vs-dark</option>
             <option>vs</option>
-          </select>
+        </select>
     </header>
     <div class="panel-content">
       <MonacoEditor 
-        name={"markup"}
-        language={"html"}
-        initialValue={html}        
-        on:keydown={(e)=> html = e.target.value}
+        name="markup"
+        language="html"
+        bind:value={source.html}
       />
       <MonacoEditor 
-        name={"style"}
-        language={"css"}
-        initialValue={css}    
-        on:keydown={(e)=> css = e.target.value}
+        name="style"
+        language="css"
+        bind:value={source.css} 
       />
       <MonacoEditor 
-        name={'script'}    
-        language={"javascript"}        
-        initialValue={js}        
-        on:keydown={(e)=> js = e.target.value}
+        name="script"  
+        language="typescript"      
+        bind:value={source.js}
       />
    </div>
   </section>
@@ -78,7 +122,7 @@
   <section id="preview" class="app-panel">
     <header class="panel-header">
       <button><span class="fas fa-edit"></span></button>
-      <p class="title">Preview</p>
+      <p class="title">Previewing {selectedSnippet.title}</p>
       <select bind:value={previewType}>
         <option>ast</option>
         <option>live</option>
@@ -88,7 +132,14 @@
       </select>
     </header>
     <div class="panel-content">
-      <ComponentPreview html={html} css={css} js={js} type={previewType}/>
+      <ComponentPreview
+        id={selectedSnippet.id}
+        title={selectedSnippet.title}
+        html={source.html}
+        css={source.css}
+        js={source.js} 
+        type={previewType}
+      />
     </div>
   </section>
 
@@ -99,8 +150,8 @@
     .workbench {
       display: grid;
       grid-template-rows: auto 1fr auto;
-      grid-template-columns: auto 1fr 1fr;
-      grid-template-areas: "top top top" "nav input output" "btm btm btm";
+      grid-template-columns: auto auto 1fr 1fr;
+      grid-template-areas: "top top top top" "nav list input output" "btm btm btm btm";
       color: white;
       height: 100%;
       box-sizing: border-box;
@@ -108,9 +159,28 @@
     Navbar {grid-area: top}
     Sidebar{grid-area: nav}
     Footer{grid-area: btm}
+    #list{grid-area: list; overflow: auto;}
     #code{
       width: 100%;
       grid-area: input
+    }
+    input {
+      background: #f1f1f1;
+      border: 1px solid var(--surface);
+      padding: .25rem .5rem;
+      outline: none;
+      border-radius: var(--radius);
+    }
+    ul{
+      margin: 0;
+      padding: .5rem;
+    }
+    li{
+      margin: 0;
+      padding: 1rem;
+      border: 1px solid var(--secondary);
+      list-style: none;
+      cursor: pointer;
     }
     #preview {
       padding: 0;
@@ -142,4 +212,3 @@
     }
     *, *::before, *::after {box-sizing: border-box}
   </style>
-

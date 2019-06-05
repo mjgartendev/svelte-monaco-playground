@@ -25,39 +25,43 @@
 	<link rel='icon' type='image/png' href='favicon.ico'>
 	<link rel='stylesheet' href='global.css'>
 	<link rel='stylesheet' href='bundle.css'>
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.17.0/min/vs/editor/editor.main.css">
+	<script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>
+	<script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.17.0/min/vs/language/typescript/tsMode.js"></script>
+	<script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.17.0/min/vs/basic-languages/typescript/typescript.js"></script>
+	<script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.17.0/min/vs/basic-languages/javascript/javascript.js"></script>
 </head>
 <body>	
 	
 	<body>
 		<script src='bundle.bundle.js'></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.5/require.min.js" integrity="sha256-0SGl1PJNDyJwcV5T+weg2zpEMrh7xvlwO4oXgvZCeZk=" crossorigin="anonymous"></script>
-		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.17.0/min/vs/loader.js"></script>
+<script>
+  require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.17.0/min/vs' }});
 
-		<script>
-				require.config({
-					paths: {
-						'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.17.0/min/vs'
-					}
-				});
-				self.MonacoEnvironment = {
-					getWorkerUrl: function (moduleId, label) {
-						if (label === 'json') {
-							return './json.worker.bundle.js';
-						}
-						if (label === 'css') {
-							return './css.worker.bundle.js';
-						}
-						if (label === 'html') {
-							return './html.worker.bundle.js';
-						}
-						if (label === 'typescript' || label === 'javascript') {
-							return './ts.worker.bundle.js';
-						}
-						return './editor.worker.bundle.js';
-					}
-				}
-				require(["vs/editor/editor.main"], function () {})
-		</script>
-	</body>
+  // Before loading vs/editor/editor.main, define a global MonacoEnvironment that overwrites
+  // the default worker url location (used when creating WebWorkers). The problem here is that
+  // HTML5 does not allow cross-domain web workers, so we need to proxy the instantiation of
+  // a web worker through a same-domain script
+  window.MonacoEnvironment = {
+    getWorkerUrl: function(workerId, label) {
+      return `data:text/javascript;charset=utf-8,${encodeURIComponent(`
+        self.MonacoEnvironment = {
+          baseUrl: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.17.0/min/'
+        };
+        importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.17.0/min/vs/base/worker/workerMain.js');`
+      )}`;
+    }
+  };
+
+	require([
+	"https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.17.0/min/vs/loader.js",
+	"https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.17.0/min/vs/editor/editor.main",
+	"https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.17.0/min/vs/editor/editor.main.nls.js",
+
+	], function () {
+		console.log(monaco.editor.getModels())
+	});
+</script>
+</body>
 </html>

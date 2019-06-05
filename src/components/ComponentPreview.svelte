@@ -2,23 +2,21 @@
   import * as svelte from 'svelte/compiler'
   import {onMount} from 'svelte'
   import * as monaco from 'monaco-editor'
-  export let type = 'ast';
+  export let type = 'live';
   export let js;
   export let css;
   export let html;
+  export let id;
+  export let title;
   let options = {}
-  $: source = `${html}\n<style>\n${css}\n</style>\n<script>\n${js}\n<\/script>`;
-  $: result = svelte.compile(source);
-  $: compiled = `${html}\n<style>\n${css}\n</style>\n<script>\n${js}\n<\/script>`;
+  $: source = `${html}\n<style>\n${css}\n<\/style>\n<script>\n${js}\n<\/script>`;
+  $: result = svelte.compile(source, {
+    name: id,
+    generate: 'dom',
+    hydratable: true,
+    filename: `"${title}.svelte"`
+  });
 </script>
-<svelte:head>
-  {#await result}
-  JSON.stringy({result.css.code})
-  <script>
-    {result.js.code}
-  </script>
-  {/await}
-</svelte:head>
 
 
 {#if type == "live"}
@@ -47,7 +45,7 @@
     border-radius: var(--radius);
     overflow: scroll;
     max-width: 600px;
-    max-height: 600px;
+    max-height: 700px;
     font-size: 16px;
   }
 </style>
