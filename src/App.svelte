@@ -10,7 +10,8 @@
   
   export let path = window.location.pathname;
   export let name = "SvelteMonaco Playground";
-  export let previewType;
+  let previewTypes = ['live', 'ast', 'original', 'css', 'js', 'vars', 'warnings', 'stats']
+  export let previewType = 'live';
   let snippets = [{id: 'NewSnippet', title: 'NewSnippet', html: "<h1>hello {name}</h1>\n<button>Button</button>", css: "button {\n\tbackground: var(--primary)\n}", js: "function x(name) {\n\tconsole.log()\t}"},]
   let selectedSnippet = snippets[0];
   $: source = {
@@ -18,12 +19,14 @@
     css: selectedSnippet.css,
     html: selectedSnippet.html,
   }
-  function updateModel(){
-      monaco.editor.getModel("inmemory://model/3").setValue(app.$$.ctx.source.html);
-      monaco.editor.getModel("inmemory://model/2").setValue(app.$$.ctx.source.css);
-      monaco.editor.getModel("inmemory://model/1").setValue(app.$$.ctx.source.js);
+  $: updateModel = () => {
+      if(source){
+        monaco.editor.getModel("inmemory://model/3").setValue(app.$$.ctx.source.html);
+        monaco.editor.getModel("inmemory://model/2").setValue(app.$$.ctx.source.css);
+        monaco.editor.getModel("inmemory://model/1").setValue(app.$$.ctx.source.js);
     }
-  export let theme = 'vs-dark';
+  }
+  $: theme = monaco.editor.setTheme(theme);
   function addSnippet() {
     db.collection("snippets").add({
       title: selectedSnippet.title,
@@ -54,6 +57,9 @@
   }
   function selectSnippet(snippet){
     selectedSnippet = snippet;
+    source.html = selectedSnippet.html;
+    source.css = selectedSnippet.css;
+    source.js = selectedSnippet.js;
     updateModel();
   }
   onMount(() => {
@@ -108,20 +114,20 @@
       <MonacoEditor 
         name="markup"
         language="html"
-        value={source.html}
-         on:keydown={(e) => source.html = e.target.value}
+        value={selectedSnippet.html}
+         on:keydown={(e) => selectedSnippet.html = e.target.value}
       />
       <MonacoEditor 
         name="style"
         language="css"
-        value={source.css}
-         on:keydown={(e) => source.css = e.target.value}
+        value={selectedSnippet.css}
+         on:keydown={(e) => selectedSnippet.css = e.target.value}
       />
       <MonacoEditor 
         name="script"  
         language="typescript"      
-        value={source.js}
-        on:keydown={(e) => source.js = e.target.value}
+        value={selectedSnippet.js}
+        on:keydown={(e) => selectedSnippet.js = e.target.value}
       />
    </div>
   </section>
@@ -131,20 +137,18 @@
       <button><span class="fas fa-edit"></span></button>
       <p class="title">Previewing {selectedSnippet.title}</p>
       <select bind:value={previewType}>
-        <option>ast</option>
-        <option>live</option>
-        <option>original</option>
-        <option>css</option>
-        <option>js</option>
+        {#each previewTypes as p}
+        <option>{p}</option>
+        {/each}
       </select>
     </header>
     <div class="panel-content">
       <ComponentPreview
         id={selectedSnippet.id}
         title={selectedSnippet.title}
-        html={source.html}
-        css={source.css}
-        js={source.js} 
+        html={selectedSnippet.html}
+        css={selectedSnippet.css}
+        js={selectedSnippet.js}
         type={previewType}
       />
     </div>
@@ -202,6 +206,7 @@
     }
     li > span:hover{
       color: tomato;
+      border-color: tomato;
     }
     #preview {
       padding: 0;

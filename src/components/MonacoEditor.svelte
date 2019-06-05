@@ -1,10 +1,6 @@
 <p>{name}</p>
-<div on:keydown on:keydown={(e) => value = e.target.value} on:change on:input id={name} style="height:100%;width:100%;"></div>
-<!-- <svelte:head>
-  <script>
-    
-  </script>
-</svelte:head> -->
+<div on:keydown on:change on:input id={name} style="height:100%;width:100%;"></div>
+
 <style>
   div {
     height: 100%;
