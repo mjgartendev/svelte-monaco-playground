@@ -1,7 +1,6 @@
 <script>
   import * as svelte from 'svelte/compiler'
   import {onMount} from 'svelte'
-  import * as monaco from 'monaco-editor'
   export let type = 'live';
   export let id;
   export let title;
@@ -10,7 +9,7 @@
   export let js;
   export let css;
   let result;
-  $: source = `${html}\n<style>\n${css}\n<\/style>\n<script lang="typescript">\n${js}\n<\/script>`;
+  $: source = `${html}\n<style>\n${css}\n<\/style>\n<script>\n${js}\n<\/script>`;
   $: {
     try {
       result = svelte.compile(source, {
@@ -29,9 +28,8 @@
     }
 </script>
 
-
 {#if type == "live"}
-  {@html source}
+{@html source}
 {/if}
 {#if type == "ast"}
   <pre id="ast" data-lang="json">{JSON.stringify(result.ast, null, 2)}</pre>

@@ -40,24 +40,4 @@
       tabCompletion: "on"
     });
   });
-  $: if(editor) {
-    monaco.editor.setTheme(theme)
-  };
-  $: if(editor) {
-    monaco.editor.setModelLanguage(language)
-  };
-  $: if(editor) {
-      if(language === "html") {
-        console.log(monaco.editor.getModel("inmemory://model/3"))
-        monaco.editor.getModel("inmemory://model/3").setValue(value)
-      }
-      if(language === "css") {
-        console.log(monaco.editor.getModel("inmemory://model/2"))
-        monaco.editor.getModel("inmemory://model/2").setValue(value)
-      }
-      if(language === "javascript") {
-        console.log(monaco.editor.getModel("inmemory://model/1"))
-        monaco.editor.getModel("inmemory://model/1").setValue(value)
-      }
-  }
 </script>

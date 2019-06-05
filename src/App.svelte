@@ -9,13 +9,19 @@
   import Footer from './views/Footer.svelte';
   
   export let path = window.location.pathname;
-  export let name = "SvelteMonaco Playground";
+  export let name;
   let previewTypes = ['live', 'ast', 'original', 'css', 'js', 'vars', 'warnings', 'stats']
   export let previewType = 'live';
-  let snippets = [{id: 'NewSnippet', title: 'NewSnippet', html: "<h1>hello {name}</h1>\n<button>Button</button>", css: "button {\n\tbackground: var(--primary)\n}", js: "function x(name) {\n\tconsole.log()\t}"},]
+  let snippets = [{
+    id: 'NewSnippet', 
+    title: 'NewSnippet', 
+    html: "<h1>hello {fullName}</h1>\n<label>First: <input bind:value={firstName} /></label>\n<label>Last: <input bind:value={lastName} /></label>\n<button on:click={logName}>Log Name</button>", 
+    css: "button {\n\tbackground: var(--primary);\n\tcolor: var(--secondary);\n\tborder: 1px solid currentColor;\n}\nh1 {\n\tcolor: tomato;\n}\nlabel \n{\n\tmargin-bottom: 1rem;\n\tfont-weight: bold;\n}", 
+    js: "function logName() {\n\tconsole.log(fullName)\n}\nexport let firstName = '';\nexport let lastName = '';\n$: fullName = firstName + ' ' + lastName;"},]
   let selectedSnippet = snippets[0];
   $: source = {
-    js: selectSnippet.js,
+    title: selectedSnippet.title,
+    js: selectedSnippet.js,
     css: selectedSnippet.css,
     html: selectedSnippet.html,
   }
@@ -27,6 +33,7 @@
     }
   }
   $: theme = monaco.editor.setTheme(theme);
+  
   function addSnippet() {
     db.collection("snippets").add({
       title: selectedSnippet.title,
@@ -35,10 +42,30 @@
       js: selectedSnippet.js,
     })
     .then(function(docRef) {
-       snippets = [...snippets, docRef];
+       snippets = [
+         ...snippets, 
+        {...docRef.data(), id: docRef.id}
+       ];
     })
     .catch(function(error) {
         console.error("Error adding document: ", error);
+    });
+  }
+  function updateSnippet(){
+    db.collection("snippets").doc(selectedSnippet.id).set({
+      title: selectedSnippet.title,
+      html: source.html,
+      css: source.css,
+      js: source.js
+    })
+     .then(function(docRef) {
+       snippets = [
+         ...snippets, 
+        {...docRef.data(), id: docRef.id}
+       ];
+    })
+    .catch(function(error) {
+        console.error("Error updating document: ", error);
     });
   }
   function removeSnippet(snippet){
@@ -57,6 +84,7 @@
   }
   function selectSnippet(snippet){
     selectedSnippet = snippet;
+    // TODO: fix this. assigning these values should not be required
     source.html = selectedSnippet.html;
     source.css = selectedSnippet.css;
     source.js = selectedSnippet.js;
@@ -89,13 +117,18 @@
   />
   <section id="list" class="app-panel">
     <header class="panel-header">
-       <button on:click={addSnippet} class="btn"><span class="fas fa-plus"></span></button>
-        <p class="title">Snippets</p>
+      <button on:click={addSnippet} class="btn">
+        <span class="fas fa-plus"></span>
+      </button>
+      <p class="title">Snippets</p>
     </header>
     <div class="panel-content">
     <ul style="overflow: auto">
-        {#each snippets as snippet}
-          <li id={snippet.id} on:click={() => selectSnippet({...snippet})}>{snippet.title} <span class="fas fa-times" on:click={() => removeSnippet({...snippet})}></span></li>
+        {#each snippets as snippet (snippet.id)}
+          <li id={snippet.id} on:click={() => selectSnippet({...snippet})}>
+            {snippet.title} 
+            <span class="fas fa-times" on:click={() => removeSnippet({...snippet})}></span>
+          </li>
         {/each}
     </ul>
     </div>
@@ -103,7 +136,7 @@
 
   <section id="code"  class="app-panel">
     <header class="panel-header">
-        <button class="btn"><span class="fas fa-edit"></span></button>
+        <button class="btn" on:click={updateSnippet}><span class="fas fa-save"></span></button>
         <input bind:value={selectedSnippet.title} class="title"/>
         <select bind:value={theme}>
             <option>vs-dark</option>
@@ -114,19 +147,19 @@
       <MonacoEditor 
         name="markup"
         language="html"
-        value={selectedSnippet.html}
+        value={source.html}
          on:keydown={(e) => selectedSnippet.html = e.target.value}
       />
       <MonacoEditor 
         name="style"
         language="css"
-        value={selectedSnippet.css}
+        value={source.css}
          on:keydown={(e) => selectedSnippet.css = e.target.value}
       />
       <MonacoEditor 
         name="script"  
         language="typescript"      
-        value={selectedSnippet.js}
+        value={source.js}
         on:keydown={(e) => selectedSnippet.js = e.target.value}
       />
    </div>
@@ -138,17 +171,17 @@
       <p class="title">Previewing {selectedSnippet.title}</p>
       <select bind:value={previewType}>
         {#each previewTypes as p}
-        <option>{p}</option>
+          <option>{p}</option>
         {/each}
       </select>
     </header>
     <div class="panel-content">
       <ComponentPreview
         id={selectedSnippet.id}
-        title={selectedSnippet.title}
-        html={selectedSnippet.html}
-        css={selectedSnippet.css}
-        js={selectedSnippet.js}
+        title={source.title}
+        html={source.html}
+        css={source.css}
+        js={source.js}
         type={previewType}
       />
     </div>
@@ -170,7 +203,11 @@
     Navbar {grid-area: top}
     Sidebar{grid-area: nav}
     Footer{grid-area: btm}
-    #list{grid-area: list; overflow: auto;}
+    #list{
+      grid-area: list; 
+      overflow: auto;
+      height: 100%; width: 100%;
+    }
     #code{
       width: 100%;
       grid-area: input
@@ -237,4 +274,4 @@
       margin: 0;
     }
     *, *::before, *::after {box-sizing: border-box}
-  </style>
+</style>
