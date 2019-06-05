@@ -16,8 +16,13 @@
   $: source = {
     js: selectSnippet.js,
     css: selectedSnippet.css,
-    html: selectedSnippet.html
-  };
+    html: selectedSnippet.html,
+  }
+  function updateModel(){
+      monaco.editor.getModel("inmemory://model/3").setValue(app.$$.ctx.source.html);
+      monaco.editor.getModel("inmemory://model/2").setValue(app.$$.ctx.source.css);
+      monaco.editor.getModel("inmemory://model/1").setValue(app.$$.ctx.source.js);
+    }
   export let theme = 'vs-dark';
   function addSnippet() {
     db.collection("snippets").add({
@@ -27,7 +32,7 @@
       js: selectedSnippet.js,
     })
     .then(function(docRef) {
-        console.log("Document written with ID: ", docRef);
+       snippets = [...snippets, docRef];
     })
     .catch(function(error) {
         console.error("Error adding document: ", error);
@@ -48,9 +53,8 @@
     console.log([snippets])
   }
   function selectSnippet(snippet){
-    console.log("Selecting snippet:", snippet)
     selectedSnippet = snippet;
-
+    updateModel();
   }
   onMount(() => {
     getSnippets();
@@ -85,7 +89,7 @@
     <div class="panel-content">
     <ul style="overflow: auto">
         {#each snippets as snippet}
-          <li id={snippet.id} on:click={() => selectSnippet({...snippet})}>{snippet.title} <span on:click={() => removeSnippet({...snippet})}>X</span></li>
+          <li id={snippet.id} on:click={() => selectSnippet({...snippet})}>{snippet.title} <span class="fas fa-times" on:click={() => removeSnippet({...snippet})}></span></li>
         {/each}
     </ul>
     </div>
@@ -104,17 +108,20 @@
       <MonacoEditor 
         name="markup"
         language="html"
-        bind:value={source.html}
+        value={source.html}
+         on:keydown={(e) => source.html = e.target.value}
       />
       <MonacoEditor 
         name="style"
         language="css"
-        bind:value={source.css} 
+        value={source.css}
+         on:keydown={(e) => source.css = e.target.value}
       />
       <MonacoEditor 
         name="script"  
         language="typescript"      
-        bind:value={source.js}
+        value={source.js}
+        on:keydown={(e) => source.js = e.target.value}
       />
    </div>
   </section>
@@ -173,14 +180,28 @@
     }
     ul{
       margin: 0;
-      padding: .5rem;
+      padding: .25rem;
     }
     li{
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin: 0;
       padding: 1rem;
       border: 1px solid var(--secondary);
       list-style: none;
       cursor: pointer;
+    }
+    li:hover {
+      border-color: var(--primary);
+    }
+    li > span {
+      padding: .25rem;
+    }
+    li > span:hover{
+      color: tomato;
     }
     #preview {
       padding: 0;

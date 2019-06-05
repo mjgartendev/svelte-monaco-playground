@@ -29,26 +29,6 @@
   export let name;
   let editor;
   onMount(() => { 
-    import * as monaco from 'monaco-editor';
-
-    self.MonacoEnvironment = {
-      getWorkerUrl: function(moduleId, language) {
-        if (language === 'json') {
-          return './json.worker.js';
-        }
-        if (language === 'css') {
-          return './css.worker.js';
-        }
-        if (language === 'html') {
-          return './html.worker.js';
-        }
-        if (language === 'typescript' || language === 'javascript') {
-          return 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.17.0/min/vs/basic-languages/typescript/typescript.js';
-        }
-        return './editor.worker.js';
-      },
-    };
-    
     monaco.editor.create(document.getElementById(name),{
       value: [value].join('/n'),
       language: language,
@@ -71,6 +51,17 @@
     monaco.editor.setModelLanguage(language)
   };
   $: if(editor) {
-    monaco.editor.getModel().setValue(value)
+      if(language === "html") {
+        console.log(monaco.editor.getModel("inmemory://model/3"))
+        monaco.editor.getModel("inmemory://model/3").setValue(value)
+      }
+      if(language === "css") {
+        console.log(monaco.editor.getModel("inmemory://model/2"))
+        monaco.editor.getModel("inmemory://model/2").setValue(value)
+      }
+      if(language === "javascript") {
+        console.log(monaco.editor.getModel("inmemory://model/1"))
+        monaco.editor.getModel("inmemory://model/1").setValue(value)
+      }
   }
 </script>
