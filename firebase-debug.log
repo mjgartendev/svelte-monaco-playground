@@ -1,0 +1,46 @@
+[debug] [2019-06-05T13:05:54.919Z] ----------------------------------------------------------------------
+[debug] [2019-06-05T13:05:54.921Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\mjgar\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js serve
+[debug] [2019-06-05T13:05:54.921Z] CLI Version:   6.10.0
+[debug] [2019-06-05T13:05:54.921Z] Platform:      win32
+[debug] [2019-06-05T13:05:54.921Z] Node Version:  v10.1.0
+[debug] [2019-06-05T13:05:54.922Z] Time:          Wed Jun 05 2019 08:05:54 GMT-0500 (Central Daylight Time)
+[debug] [2019-06-05T13:05:54.922Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2019-06-05T13:05:54.932Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2019-06-05T13:05:54.932Z] > authorizing via signed-in user
+[debug] [2019-06-05T13:05:54.932Z] [iam] checking project fullstackvoyage for permissions ["firebase.projects.get"]
+[debug] [2019-06-05T13:05:54.934Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/fullstackvoyage:testIamPermissions  
+
+[debug] [2019-06-05T13:05:55.132Z] <<< HTTP RESPONSE 200
+[debug] [2019-06-05T13:05:55.133Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/fullstackvoyage  
+ 
+[debug] [2019-06-05T13:05:55.270Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Serving from 'C:\Users\mjgar\repos\sapper\svelte-playground'...
+[info] 
+[warn] !  Your requested "node" version "8" doesn't match your global version "10"
+[debug] [2019-06-05T13:05:55.275Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/630829677802/clients/_:getWebAppConfig  
+ 
+[debug] [2019-06-05T13:05:55.275Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/630829677802:getServerAppConfig  
+ 
+[debug] [2019-06-05T13:05:55.415Z] <<< HTTP RESPONSE 200
+[info] +  functions: Emulator started at http://localhost:5001
+[debug] [2019-06-05T13:05:55.499Z] <<< HTTP RESPONSE 200
+[info] i  functions: Watching "C:\Users\mjgar\repos\sapper\svelte-playground\functions" for Cloud Functions...
+[info] i  hosting: Serving hosting files from: public
+[info] +  hosting: Local server: http://localhost:5000
+[debug] [2019-06-05T13:05:55.916Z] Functions runtime initialized.
+[debug] [2019-06-05T13:05:55.917Z] Disabled runtime features: {"functions_config_helper":true,"network_filtering":true,"timeout":true,"memory_limiting":true,"protect_env":true,"admin_stubs":true}
+[debug] [2019-06-05T13:05:56.584Z] firebase-admin has been stubbed.
+[warn] !  Error: Cannot find module 'svelte/reigster'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:571:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:497:25)
+    at Module.require (internal/modules/cjs/loader.js:626:17)
+    at require (internal/modules/cjs/helpers.js:20:18)
+    at Object.<anonymous> (C:\Users\mjgar\repos\sapper\svelte-playground\functions\lib\index.js:5:1)
+    at Module._compile (internal/modules/cjs/loader.js:678:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:689:10)
+    at Module.load (internal/modules/cjs/loader.js:589:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:528:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:520:3)
+[warn] !  Your function was killed because it raised an unhandled error.

@@ -3,6 +3,7 @@
   "homepage": "https://mjgartendev.github.io/svelte-monaco-playground/",
   "dependencies": {
     "firebase": "^6.1.0",
+    "jsoneditor": "^5.33.0",
     "rxfire": "^3.5.0",
     "rxjs": "^6.5.2",
     "yootils": "0.0.16"
@@ -24,5 +25,5 @@
     "build": "cross-env NODE_ENV=production webpack",
     "dev": "webpack-dev-server --content-base public",
     "predeploy": "npm run build"
-    }
+  }
 }

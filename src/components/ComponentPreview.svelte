@@ -1,6 +1,7 @@
 <script>
   import * as svelte from 'svelte/compiler'
   import {onMount} from 'svelte'
+  import JsonEditor from './JsonEditor.svelte';
   export let type = 'live';
   export let id;
   export let title;
@@ -32,7 +33,7 @@
 {@html source}
 {/if}
 {#if type == "ast"}
-  <pre id="ast" data-lang="json">{JSON.stringify(result.ast, null, 2)}</pre>
+  <JsonEditor json={result.ast}/>
 {/if}
 {#if type == "css"}
   {#if result.css.code}
@@ -53,21 +54,21 @@
 {/if}
 {#if type == "stats"}
   {#if result.stats}
-  <pre id="stats" data-lang="json">{JSON.stringify(result.stats, null, 2)}</pre>
+  <JsonEditor json={result.stats}/>
   {:else}
   <p>No Stats output</p>
   {/if}
 {/if}
 {#if type == "warnings"}
   {#if result.warnings}
-  <pre id="warnings" data-lang="json">{JSON.stringify(result.warnings, null, 2)}</pre>
+  <JsonEditor json={result.warnings} />
   {:else}
   <p>No Warnings output</p>
   {/if}
 {/if}
 {#if type == "vars"}
   {#if result.vars}
-  <pre id="vars" data-lang="json">{JSON.stringify(result.vars, null, 2)}</pre>
+  <JsonEditor json={result.vars}/>
   {:else}
   <p>No Variables output</p>
   {/if}
