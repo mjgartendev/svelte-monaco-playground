@@ -3,7 +3,6 @@ const app = new App({
 	target: document.body,
 	hydrateable: true,
 	props: {
-		name: 'SvelteMonaco Playground',
 		previewType: "live"
 	}
 });

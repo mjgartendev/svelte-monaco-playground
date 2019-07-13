@@ -1,7 +1,7 @@
 import * as functions from 'firebase-functions';
 const svelte = require('svelte/compiler');
-require('svelte/reigster')
-const Component = require('./NewSnippet.js').default ;
+const Component = require('../Component.svelte');
+
 const source = (`
   <h1>hello {fullName}</h1>
   <label>First: <input bind:value={firstName} /></label>

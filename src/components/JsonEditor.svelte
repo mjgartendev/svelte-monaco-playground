@@ -8,8 +8,6 @@
   export let options = {
     mode: 'code'
   };
-  export let width = 500;
-  export let height = 600;
   export let json = {
     "Array": [1, 2, 3],
     "Boolean": true,

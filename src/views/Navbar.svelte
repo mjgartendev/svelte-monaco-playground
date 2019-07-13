@@ -1,8 +1,8 @@
 <header>
   <div>
-    {title}
+    <img src="logo-192.png" height="40" alt="svelte logo" />
   </div>
-  <div><img src="logo-192.png" height="40" alt="svelte logo" /></div>
+  <h1>svelte-repl-monaco</h1>
   <div>
     <nav>
       {#each links as link}
@@ -16,11 +16,10 @@
 <script>
   import Login from '../components/Login.svelte';
   export let links;
-  export let title = "AppTitle";
 </script>
 <style>
   header{
-    height: 50px;
+    height: 40px;
     display: flex;
     align-items: center;
     background: var(--surface);
@@ -29,7 +28,7 @@
     width: 100%;
     display: flex;
     justify-content: space-between;
-    padding: 0 .5rem;
+    padding: .25rem 2rem;
   }
   nav{
     display: flex;
@@ -43,6 +42,10 @@
     font-weight: bold;
     cursor: pointer;
     text-decoration: none;
+  }
+  h1 {
+    color: var(--light);
+    font-size: 1.3rem;
   }
   a:hover{
     background: var(--white, white);

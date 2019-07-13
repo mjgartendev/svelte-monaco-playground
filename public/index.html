@@ -13,35 +13,14 @@
 	<link rel='icon' type='image/png' href='favicon.ico'>
 	<link rel='stylesheet' href='global.css'>
 	<link rel='stylesheet' href='app.css'>
+	<link rel="stylesheet" href="monaco.css">
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.17.0/min/vs/editor/editor.main.css">
-	<script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>
-	<script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.17.0/min/vs/language/typescript/tsMode.js"></script>
-	<script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.17.0/min/vs/basic-languages/typescript/typescript.js"></script>
-	<script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.17.0/min/vs/basic-languages/javascript/javascript.js"></script>
-	<script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.17.0/min/vs/basic-languages/handlebars/handlebars.js"></script>
 
 </head>
 <body>	
 	
 	<body>
 		<script src='app.bundle.js'></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.17.0/min/vs/loader.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.17.0/min/vs/editor/editor.main.nls.js"></script>
-<script>
-  require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.17.0/min/vs' }});
-  window.MonacoEnvironment = {
-    getWorkerUrl: function(workerId, label) {
-      return `data:text/javascript;charset=utf-8,${encodeURIComponent(`
-        self.MonacoEnvironment = {
-          baseUrl: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.17.0/min/'
-        };
-        importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.17.0/min/vs/base/worker/workerMain.js');`
-      )}`;
-    }
-  };
 
-	
-</script>
 </body>
 </html>

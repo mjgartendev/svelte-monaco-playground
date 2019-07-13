@@ -25,19 +25,22 @@
     }
     finally{
       console.log('compiled source', result)
-      }
     }
+  }
+  $: instance = result.js.code;
 </script>
 
 {#if type == "live"}
-{@html source}
+<iframe style="width: 100%; height: 100%;" sandbox="allow-scripts" srcdoc="{source}">
+</iframe>
+
 {/if}
 {#if type == "ast"}
   <JsonEditor json={result.ast}/>
 {/if}
 {#if type == "css"}
   {#if result.css.code}
-  <pre id="css" data-lang="css">{result.css.code}</pre>
+  <JsonEditor json={result.css.code} options={"mode:'code'"}/>
   {:else}
   <p>No CSS output</p>
   {/if}

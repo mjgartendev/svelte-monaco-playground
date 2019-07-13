@@ -1,11 +1,13 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const MonacoEditorPlugin = require('monaco-editor-webpack-plugin');
 const mode = process.env.NODE_ENV || 'development';
 const prod = mode === 'production';
 
 module.exports = {
 	mode: 'development',
 	entry: {
-		app: ['./src/main.js'],
+		app: './src/main.js',
+		monaco: './src/index.js'
 	},
 	resolve: {
 		extensions: ['.mjs', '.js', '.svelte']
@@ -40,6 +42,7 @@ module.exports = {
 	},
 	mode,
 	plugins: [
+		new MonacoEditorPlugin(),
 		new MiniCssExtractPlugin({
 			filename: '[name].css'
 		})

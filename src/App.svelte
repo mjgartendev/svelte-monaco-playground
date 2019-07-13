@@ -2,16 +2,16 @@
   import * as monaco from 'monaco-editor';
   import {onMount} from 'svelte'
   import {db} from './firebase.js'
-  import MonacoEditor from './components/MonacoEditor.svelte'
-  import ComponentPreview from './components/ComponentPreview.svelte'
+  import MonacoEditor from './components/MonacoEditor.svelte';
+  import ComponentPreview from './components/ComponentPreview.svelte';
+  import ReplMonaco from './components/ReplMonaco.svelte';
   import Navbar from './views/Navbar.svelte';
-  import Sidebar from './views/Sidebar.svelte';
   import Footer from './views/Footer.svelte';
-  
+  import {themes} from './monaco-themes.js';
   export let path = window.location.pathname;
-  export let name;
-  let previewTypes = ['live', 'ast', 'original', 'css', 'js', 'vars', 'warnings', 'stats']
-  export let previewType = 'live';
+  let type = 'example';
+  let previewType = 'live';
+  let previewTypes = ['live', 'ast', 'html', 'js', 'css', 'vars', 'stats']
   let snippets = [{
     id: 'NewSnippet', 
     title: 'NewSnippet', 
@@ -26,14 +26,29 @@
     html: selectedSnippet.html,
   }
   $: updateModel = () => {
-      if(source){
-        monaco.editor.getModel("inmemory://model/3").setValue(app.$$.ctx.source.html);
-        monaco.editor.getModel("inmemory://model/2").setValue(app.$$.ctx.source.css);
-        monaco.editor.getModel("inmemory://model/1").setValue(app.$$.ctx.source.js);
+      if(type === 'example'){
+        monaco.editor
+          .getModel("inmemory://model/1")
+          .setValue(`${source.html}\n\n<style type="text/scss">\n  ${source.css}\n</style>\n\n<script type="text/typescript">\n${source.js}\n<\/script>\n`);
+    }else {
+      monaco.editor.getModel("inmemory://model/1").setValue(source.html);
+      monaco.editor.getModel("inmemory://model/2").setValue(source.css);
+      monaco.editor.getModel("inmemory://model/3").setValue(source.js);
     }
   }
-  $: theme = monaco.editor.setTheme(theme);
-  
+  let theme = {id: 'oceanic-next', name: 'Oceanic Next'};
+  $: {
+      if(theme == 'vs' || theme == 'vs-dark'){
+         monaco.editor.setTheme(theme);
+      }else {
+       fetch(`/themes/${encodeURIComponent(theme.name)}.json`)
+        .then(data => data.json())
+        .then(data => {
+          monaco.editor.defineTheme(theme.id, data);
+          monaco.editor.setTheme(theme.id);
+        })
+      }
+    }
   function addSnippet() {
     db.collection("snippets").add({
       title: selectedSnippet.title,
@@ -46,6 +61,7 @@
          ...snippets, 
         {...docRef.data(), id: docRef.id}
        ];
+       updateModel();
     })
     .catch(function(error) {
         console.error("Error adding document: ", error);
@@ -63,6 +79,7 @@
          ...snippets, 
         {...docRef.data(), id: docRef.id}
        ];
+       updateModel();
     })
     .catch(function(error) {
         console.error("Error updating document: ", error);
@@ -97,30 +114,18 @@
 
 <div class="workbench">
   <Navbar 
-    title={name} 
     links={[
       {name: "home", to: "."},
       {name: "explore", to: "/explore"},
       {name: "profile", to: "/profile"}
     ]}
   />
-  <Sidebar
-    {path}
-    links={[
-      {name: "dashboard", to: "", icon: "home"},
-      {name: "settings", to: "/settings", icon: "cog"},
-      {name: "theme", to: "/theme", icon: "paint-brush"},
-      {name: "resources", to: "/resources", icon: "compass"},
-      {name: "components", to: "/components", icon: "cubes"},
-      {name: "projects", to: "/projects", icon: "box-open"}
-    ]}
-  />
+  
   <section id="list" class="app-panel">
     <header class="panel-header">
       <button on:click={addSnippet} class="btn">
         <span class="fas fa-plus"></span>
       </button>
-      <p class="title">Snippets</p>
     </header>
     <div class="panel-content">
     <ul style="overflow: auto">
@@ -139,32 +144,41 @@
         <button class="btn" on:click={updateSnippet}><span class="fas fa-save"></span></button>
         <input bind:value={selectedSnippet.title} class="title"/>
         <select bind:value={theme}>
+          {#each themes as theme}
+            <option value={theme}>{theme.name}</option>
+          {/each}
             <option>vs-dark</option>
             <option>vs</option>
         </select>
     </header>
-    <div class="panel-content">
+    <div class="panel-content repl-outer">
+      {#if type === 'repl'}
       <MonacoEditor 
         name="markup"
-        language="html"
+        language="handlebars"
         value={source.html}
-         on:keydown={(e) => selectedSnippet.html = e.target.value}
+         on:keyup={(e) => selectedSnippet.html = e.target.value}
       />
       <MonacoEditor 
         name="style"
         language="css"
         value={source.css}
-         on:keydown={(e) => selectedSnippet.css = e.target.value}
+         on:keyup={(e) => selectedSnippet.css = e.target.value}
       />
       <MonacoEditor 
         name="script"  
         language="typescript"      
         value={source.js}
-        on:keydown={(e) => selectedSnippet.js = e.target.value}
+        on:keyup={(e) => selectedSnippet.js = e.target.value}
       />
+    {:else}
+      <ReplMonaco />
+    {/if}
+
    </div>
   </section>
 
+  {#if type === 'repl'}
   <section id="preview" class="app-panel">
     <header class="panel-header">
       <button><span class="fas fa-edit"></span></button>
@@ -186,26 +200,26 @@
       />
     </div>
   </section>
+  {/if}
 
-  <Footer/>
+  <!-- <Footer/> -->
 </div>
   
 <style>
     .workbench {
       display: grid;
       grid-template-rows: auto 1fr auto;
-      grid-template-columns: auto auto 1fr 1fr;
-      grid-template-areas: "top top top top" "nav list input output" "btm btm btm btm";
+      grid-template-columns: auto  1fr auto;
+      grid-template-areas:  "top top top" "list input output" "btm btm btm";
       color: white;
       height: 100%;
       box-sizing: border-box;
     }
     Navbar {grid-area: top}
-    Sidebar{grid-area: nav}
     Footer{grid-area: btm}
     #list{
-      grid-area: list; 
-      overflow: auto;
+      grid-area: list;
+      overflow: hidden;
       height: 100%; width: 100%;
     }
     #code{
@@ -213,7 +227,9 @@
       grid-area: input
     }
     input {
-      background: #f1f1f1;
+      background: #ddd;
+      color: var(--secondary);
+      font-weight: bold;
       border: 1px solid var(--surface);
       padding: .25rem .5rem;
       outline: none;
@@ -263,15 +279,16 @@
       background: var(--surface);
     }
     section.app-panel  > .panel-header {
-      height: 40px;
+      height: 30px;
       color: var(--primary);
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-start;
       padding: 0.5em;
       align-items: center;
       font-weight: bold;
       background: var(--surface);
       margin: 0;
     }
+    	
     *, *::before, *::after {box-sizing: border-box}
 </style>
