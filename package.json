@@ -3,7 +3,7 @@
   "homepage": "https://mjgartendev.github.io/svelte-monaco-playground/",
   "dependencies": {
     "firebase": "^6.1.0",
-    "jsoneditor": "^5.33.0",
+    "jsoneditor": "^9.5.6",
     "monaco-themes": "^0.3.3",
     "rxfire": "^3.5.0",
     "rxjs": "^6.5.2",
